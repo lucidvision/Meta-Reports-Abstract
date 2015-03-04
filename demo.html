@@ -1,0 +1,151 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Meta</title>
+		<meta name="keywords" content="SAP, Web Intelligence, SDK, Business Intelligence, BI, Report, Analysis">
+		<meta name="description" content="Report comparison, timelines, analysis. Extract new data. Predictive analysis.">
+		<meta name="author" content="Brian Park">
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no"></meta> 
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+		<script src="scripts/jquery.loadmask.js" type="text/javascript"></script>
+		<script src="scripts/jquery.csv-0.71.min.js"></script>
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+		<link rel="stylesheet" type="text/css" href="css/ui.css" />
+		<link rel="stylesheet" type="text/css" href="css/jquery.loadmask.css" />
+		<script src="https://www.google.com/jsapi" type="text/javascript"></script>
+		<script src="scripts/ui.js" type="text/javascript"></script>
+		<script src="scripts/rest.js" type="text/javascript"></script>
+		<script src="scripts/engine.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			google.load('visualization', '1', {packages:['corechart']});
+			google.load('visualization', '1', {packages:['geochart']});
+			google.load('visualization', '1', {packages:['table']});
+		</script>
+	</head>
+	
+	<body style="background-color:black">	
+		<div class="header">
+			<div id="logo">
+				<img alt='RI' src="/images/Logo.png"></img>
+			</div>
+			<div id="title">
+				<h3>Meta_</h3>
+			</div>
+			<div id="logon">
+				<label>Server:  </label>
+				<input type="text" id="serverip" value="10.162.204.113"/>
+				<label>User Name:  </label>
+				<input type="text" id="usr" value="Administrator"/>
+				<label>Password:  </label> 
+				<input type="password" id="pw" value="Password1"/>
+				<a onclick='serverIP(serverip.value)'><img class="imgpad" alt='logon' src='/images/Key.png' title='Go'/></a>
+			</div>
+			<div id="loggedOn">
+				<span id='info'></span><a onclick='changeLogOut()'><img class="imgpad" src="/images/Down.png" title='Change'/></a>
+			</div>
+		</div>
+			
+		<div id="main_content">
+			<div class="toolbar">
+				<div id="reportTools">
+					<ul>
+						<li><a onclick='getDocs()'><img alt='WebI' class="imgpad" src='/images/WebiDocument.png' title='Web Intelligence'/></a></li>
+						<li><a onclick='parseCrystal()'><img class="imgpad" alt='CR' src='/images/CrystalReportDocument.png' title='Crystal Report'/></a></li>
+						<li><a onclick=''>
+								<img id='upfile' alt='CSV' class="imgpad" src='/images/CSVDocument.png' title='Upload CSV file' style="cursor:pointer"/>
+								<input id="file" type="file" onchange="startRead()" style="display:none"></input>
+							</a>
+						</li>
+						<li><a onclick='createCustomTree()'><img alt='Custom' class="imgpad" src='/images/Custom.png' title='Create Custom Report'/></a></li>
+						<li><a onclick='treeRefresh()'><img alt='Renew' class="imgpad" src='/images/Refresh.png' title='Get New Data'/></a></li>
+					</ul>
+				</div>
+				<div id="chartTools">
+					<ul>
+						<li><input type="radio" name="chart" id="chartBar" value="bar" checked><img src='images/BarChart.gif' alt='Bar' title='Bar Chart'/></input></li>
+						<li><input type="radio" name="chart" id="chartPie" value="pie"><img src='images/PieChart.gif' alt='Pie' title='Pie Chart'/></input></li>
+						<li><input type="radio" name="chart" id="chartGeo" value="geo"><img src='images/Earth.png' alt='Earth' title='Geo Chart'/></input></li>
+						<li><input type="radio" name="chart" id="chartTable" value="table"><img src='/images/Table.png' title='Table'/></input></li>
+					</ul>
+				</div>
+				<div id="functionTools">
+					<ul>
+						<li><input type="checkbox" name="function" id="getParameter" value="param"><img src='/images/Parameter.png' alt='Parameter' title='Set Parameter'/></input></li>
+						<li><input type="checkbox" name="function" id="setSchedule" value="sched"><a onclick="displaySched()"><img class="imgpad" src='/images/Schedule.png' alt='Schedule' title='Schedule Report'/></a></input></li>
+						<li><input type="checkbox" name="function" id="add" value="operator"><img src='/images/Add.png' alt='Add' title='Add'/></input></li>
+						<li><input type="checkbox" name="function" id="subtract" value="operator"><img src='/images/Subtract.png' alt='Subtract' title='Subtract'/></input></li>
+						<li><input type="checkbox" name="function" id="multiply" value="operator"><img src='/images/Multiply.png' alt='Multiply' title='Multiply'/></input></li>
+						<li><input type="checkbox" name="function" id="divide" value="operator"><img src='/images/Divide.png' alt='Divide' title='Divide'/></input></li>
+					</ul>
+				</div>
+				<div id='appTools'>
+					<ul>
+						<li><a onclick="refresh()"><img class="imgpad" alt='Refresh' src='/images/Refresh.png' title='Refresh Dataspace'/></a></li>
+					</ul>
+				</div>
+				<div id="analTools">
+					<ul>
+						<li><a onclick="equal()"><img alt='Equal' class="imgpad" src='/images/Equal.png' title='Equal'></a></li>
+						<li><a onclick="lineAnalData()"><img alt='Line' class="imgpad" src='/images/Line.gif' title='Compare Data'></a></li>
+						<li><a onclick="AnalData()"><img alt='Analyze' class="imgpad" src='/images/Analytic.gif' title='Average Data'></a></li>
+						<li><a onclick="extendAnalData()"><img alt='Extend' class="imgpad" src='/images/Extend.png' title='Extend Data'></a></li>
+						<li><a onclick="comboAnalData()"><img alt='Combo' class="imgpad" src='/images/Combo.gif' title='Combine Data'></a></li>
+						<li><a onclick="analPercent()"><img alt='Percent' class="imgpad" src='/images/Percent.gif' title='Percent Change'></a></li>
+						<li><a onclick="analBubble()"><img alt='Bubble' class="imgpad" src='/images/Bubble.gif' title='Bubble Data'></a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="chartView">
+				<div class="chart" id="a"><div class="circle" id="1"></div></div>
+				<div class="chart" id="b"><div class="circle" id="2"></div></div>
+				<div class="chart" id="c"><div class="circle" id="3"></div></div>
+				<div class="chart" id="d"><div class="circle" id="4"></div></div>
+			</div>
+			
+			<div class="treeView">
+				<div id="treeList">
+				</div>
+			</div>
+		</div>
+		<div class="paramPop">
+			<form method="post" class="param" action="#">
+				<fieldset class="textbox">
+					<span id="paramLabel"></span>
+					<input id="paramValue" name="parameter" value="" type="text">
+					<button class="submit" type="button">Submit</button>
+				</fieldset>
+			</form>
+		</div>
+		<div class="schedulePop">
+			<form method="post" class="sched" action="#">
+				<fieldset class="sBox">
+					<span>Schedule Name</span>
+					<input id="sName" value="" type="text">
+					<span>Destination</span><br>
+					<input class="dSched" type="radio" name="dSchedule">Inbox</input>
+					<input class="dSched" type="radio" name="dSchedule">E-Mail</input><br>
+					<span>Frequency</span><br>
+					<input class="fSched" type="radio" name="fSchedule">Once</input><br>
+					<span>Format</span><br>
+					<input class="foSched" type="radio" name="foSchedule">WebI</input>
+					<input class="foSched" type="radio" name="foSchedule">PDF</input><br>
+					<input class="foSched" type="radio" name="foSchedule">XLS</input>
+					<input class="foSched" type="radio" name="foSchedule">CSV</input><br>
+					<span>Start Date</span>
+					<input type="date" class="sDate" id="datepicker"></input>
+					<span>Start Time</span>
+					<input type="time" name="sTime"></input>
+					<span>End Date</span>
+					<input type="date" class="eDate" id="datepicker"></input>
+					<span>End Time</span>
+					<input type="time" name="eTime"></input><br>
+					<button class="submit1" type="button" style="float:right">Submit</button>
+				</fieldset>
+			</form>
+		</div>
+		<div class="footer">
+		</div>
+	</body>
+</html>
+	
